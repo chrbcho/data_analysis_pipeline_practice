@@ -37,3 +37,46 @@ results/sierra.dat : scripts/wordcount.py data/sierra.txt
 		--input_file=data/sierra.txt \
 		--output_file=results/sierra.dat
 
+# plot
+figs : results/figure/isles.png \
+	results/figure/abyss.png \
+	results/figure/last.png \
+	results/figure/sierra.png
+
+results/figure/isles.png : scripts/plotcount.py results/isles.dat
+	python scripts/plotcount.py \
+		--input_file=results/isles.dat \
+		--output_file=results/figure/isles.png
+results/figure/abyss.png : scripts/plotcount.py results/abyss.dat
+	python scripts/plotcount.py \
+		--input_file=results/abyss.dat \
+		--output_file=results/figure/abyss.png
+results/figure/last.png : scripts/plotcount.py results/last.dat
+	python scripts/plotcount.py \
+		--input_file=results/last.dat \
+		--output_file=results/figure/last.png
+results/figure/sierra.png : scripts/plotcount.py results/sierra.dat
+	python scripts/plotcount.py \
+		--input_file=results/sierra.dat \
+		--output_file=results/figure/sierra.png
+
+# write the report
+report/count_report.html : report/count_report.qmd figs
+	quarto render report/count_report.qmd
+
+clean-dats :
+	rm -f results/isles.dat \
+		results/abyss.dat \
+		results/last.dat \
+		results/sierra.dat
+
+clean-figs :
+	rm -f results/figure/isles.png \
+	results/figure/abyss.png \
+	results/figure/last.png \
+	results/figure/sierra.png
+
+clean : clean-dats \
+	clean-figs
+	rm -f report/count_report.html
+	rm -rf report/count_report_files
